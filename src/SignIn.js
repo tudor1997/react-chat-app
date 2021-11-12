@@ -21,7 +21,7 @@ const SignIn = () => {
         
     }
     return (
-        <button onClick={signInWithGoogle}>
+        <button className="signIn" onClick={signInWithGoogle}>
             Sign in with Google
         </button>
     )
@@ -29,7 +29,7 @@ const SignIn = () => {
 
 function SignOut(){
     return auth.currentUser && (
-         <button onClick={() => auth.signOut()}>Sign Out</button>
+         <button className="signOut-btn" onClick={() => auth.signOut()}>Sign Out</button>
     )
 }
 
