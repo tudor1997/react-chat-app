@@ -44,12 +44,13 @@ const collectionRef = collection(db, "messages")
 const dummy = React.useRef();
 const setMessage = async (e) => {
   e.preventDefault();
-  await setDoc(doc(collection(collectionRef),{
+  const newMessageRef = doc(collectionRef);
+  await setDoc(newMessageRef, {
     text:newMessage,
     createdAt:new Date(),
     displayName,
     uid
-  }))
+  });
 
 
   setNewMessage('');
