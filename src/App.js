@@ -4,7 +4,7 @@ import {collection, getDocs, addDoc, query, orderBy, limit } from 'firebase/fire
 import {FcVoicePresentation} from 'react-icons/fc'
 // firebase hooks
 import {useAuthState} from 'react-firebase-hooks/auth'
-
+import {useCollectionData} from 'react-firebase-hooks/firestore'
 
 // components
 
@@ -13,16 +13,9 @@ import {SignOut} from './SignIn';
 
 
 function App() {
-  const [messages, setMessages] = React.useState([]);
-  const collectionRef = collection(db, "messages")
-  React.useEffect(() => {
-      const getMessages = async () => {
-        const q = query(collectionRef, orderBy('createdAt', 'asc', limit(25)))
-        const data = await getDocs(q);
-        setMessages(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
-      }
-      getMessages()
-  },[messages])
+ 
+
+
   const [user] = useAuthState(auth);
   return (
     
@@ -34,7 +27,7 @@ function App() {
       </header>
 
       <section className="chat-content">
-        {user ? <ChatRoom messages={messages} /> : <SignIn />}
+        {user ? <ChatRoom /> : <SignIn />}
       </section>
       </article>
   
@@ -43,7 +36,7 @@ function App() {
     
   );
 }
-function ChatRoom({messages}) {
+function ChatRoom() {
 const [newMessage, setNewMessage] = React.useState('');
 const {displayName, uid} = auth.currentUser
 const collectionRef = collection(db, "messages")
@@ -59,6 +52,11 @@ const setMessage = async (e) => {
   setNewMessage('');
   dummy.current.scrollIntoView({behavior:"smooth"});
 }
+
+
+const data = query(collectionRef, orderBy('createdAt', 'asc', limit(25)))
+const [messages] =  useCollectionData(data, {idField: 'id'})
+console.log(messages);
   return ( <div className="container">
     <div className="messages-list">
     {messages.map((message) => {
