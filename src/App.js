@@ -60,8 +60,9 @@ React.useEffect(() => {
       setMessages(data.docs.map((doc) => ({...doc.data(), id:doc.id})));
      }
      getMessage();
-},[messages])
+},[])
 
+console.log(messages);
 
 
 
@@ -90,7 +91,7 @@ React.useEffect(() => {
 function ChatMessage(message){
  const {text} = message.value
  const {displayName, uid} = auth.currentUser
- const messageCLass = uid === auth.currentUser.uid ? 'sent' : 'received';
+ const messageCLass = uid !== auth.currentUser.uid ? 'received' : 'sent';
   return (
 
       <article className={`message ${messageCLass}`}>
