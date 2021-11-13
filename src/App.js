@@ -52,11 +52,20 @@ const setMessage = async (e) => {
   setNewMessage('');
   dummy.current.scrollIntoView({behavior:"smooth"});
 }
+const [messages, setMessages] = React.useState([])
+
+React.useEffect(() => {
+     const getMessage = async () => {
+      const data = await getDocs(collectionRef, orderBy('createdAt', 'asc', limit(25)));
+      setMessages(data.docs.map((doc) => ({...doc.data(), id:doc.id})));
+     }
+     getMessage();
+},[messages])
 
 
-const data = query(collectionRef, orderBy('createdAt', 'asc', limit(25)))
-const [messages] =  useCollectionData(data, {idField: 'id'})
-console.log(messages);
+
+
+;
   return ( <div className="container">
     <div className="messages-list">
     {messages.map((message) => {
