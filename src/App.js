@@ -12,6 +12,7 @@ import {SignIn} from './SignIn';
 import {SignOut} from './SignIn';
 
 
+
 function App() {
  
 
@@ -43,12 +44,12 @@ const collectionRef = collection(db, "messages")
 const dummy = React.useRef();
 const setMessage = async (e) => {
   e.preventDefault();
-  await setDoc(doc(collectionRef, uid),{
+  await setDoc(doc(collection(collectionRef),{
     text:newMessage,
     createdAt:new Date(),
     displayName,
     uid
-  })
+  }))
 
 
   setNewMessage('');
@@ -62,9 +63,9 @@ React.useEffect(() => {
       setMessages(data.docs.map((doc) => ({...doc.data(), id:doc.id})));
      }
      getMessage();
-},[])
+},[messages])
 
-console.log(messages);
+
 
 
 
@@ -91,9 +92,10 @@ console.log(messages);
 }
 
 function ChatMessage(message){
- const {text, id} = message.value
- const {displayName, } = auth.currentUser
- const messageCLass = id === auth.currentUser.uid ? 'sent' : 'received';
+  
+ const {text, uid, displayName} = message.value
+ 
+ const messageCLass = uid === auth.currentUser.uid ? 'sent' : 'received';
   return (
 
       <article className={`message ${messageCLass}`}>
