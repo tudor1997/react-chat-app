@@ -1,6 +1,6 @@
 import React from 'react';
 import {auth, db} from './context/firebase'
-import {collection, getDocs, addDoc, query, orderBy, limit } from 'firebase/firestore'
+import {collection, getDocs, setDoc, query, orderBy, limit,doc } from 'firebase/firestore'
 import {FcVoicePresentation} from 'react-icons/fc'
 // firebase hooks
 import {useAuthState} from 'react-firebase-hooks/auth'
@@ -43,12 +43,14 @@ const collectionRef = collection(db, "messages")
 const dummy = React.useRef();
 const setMessage = async (e) => {
   e.preventDefault();
-  await addDoc(collectionRef, {
+  await setDoc(doc(collectionRef, uid),{
     text:newMessage,
     createdAt:new Date(),
     displayName,
     uid
-  });
+  })
+
+
   setNewMessage('');
   dummy.current.scrollIntoView({behavior:"smooth"});
 }
@@ -89,9 +91,9 @@ console.log(messages);
 }
 
 function ChatMessage(message){
- const {text} = message.value
- const {displayName, uid} = auth.currentUser
- const messageCLass = uid !== auth.currentUser.uid ? 'received' : 'sent';
+ const {text, id} = message.value
+ const {displayName, } = auth.currentUser
+ const messageCLass = id === auth.currentUser.uid ? 'sent' : 'received';
   return (
 
       <article className={`message ${messageCLass}`}>
