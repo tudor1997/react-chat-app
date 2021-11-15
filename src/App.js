@@ -60,7 +60,7 @@ const [messages, setMessages] = React.useState([])
 
 React.useEffect(() => {
      const getMessage = async () => {
-      const data = await getDocs(collectionRef, orderBy('createdAt', limit(25)));
+      const data = await getDocs(collectionRef, orderBy('createdAt', limit(25)), orderBy('text', 'desc'));
       setMessages(data.docs.map((doc) => ({...doc.data(), id:doc.id})));
      }
      getMessage();
