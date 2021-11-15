@@ -1,6 +1,6 @@
 import React from 'react';
 import {auth, db} from './context/firebase'
-import {collection, getDocs, setDoc, query, orderBy, limit,doc } from 'firebase/firestore'
+import {collection, getDocs, setDoc, query, orderBy, limit,doc,serverTimestamp ,onSnapshot } from 'firebase/firestore'
 import {FcVoicePresentation} from 'react-icons/fc'
 // firebase hooks
 import {useAuthState} from 'react-firebase-hooks/auth'
@@ -48,7 +48,7 @@ const setMessage = async (e) => {
  const newMessageRef = doc(collectionRef);
   await setDoc(newMessageRef, {
     text:newMessage,
-    createdAt:new Date(),
+    createdAt:serverTimestamp(),
     displayName,
     uid
   });
@@ -59,12 +59,16 @@ const setMessage = async (e) => {
 const [messages, setMessages] = React.useState([])
 
 React.useEffect(() => {
-     const getMessage = async () => {
-      const data = await getDocs(collectionRef, orderBy('createdAt', limit(25)), orderBy('text', 'desc'));
-      setMessages(data.docs.map((doc) => ({...doc.data(), id:doc.id})));
-     }
-     getMessage();
-},[messages])
+     const q = query(collectionRef, orderBy('createdAt', 'asc'))
+      const unsub =  onSnapshot(q, (snapshot) => {
+        setMessages(snapshot.docs.map((doc) => ({...doc.data(), id:doc.id})));
+
+        return unsub
+      });
+      
+     
+  
+},[])
 
 
 
